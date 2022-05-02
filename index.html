@@ -1,0 +1,420 @@
+<html>
+<head>
+  <title>
+    Wordle
+  </title>
+</head>
+<script async="false">
+  function main() {
+    class App {
+      constructor() {
+        this.showHelp = true;
+        this.game = new Game()
+        this.help = document.querySelector("#help")
+        this.gameBoard = document.querySelector("#game-view")
+        this.draw()
+        this.draw_keyboard()
+      }
+
+      draw_keyboard() {
+        let fst = "qwertyuiop";
+        let snd = "asdfghjkl";
+        let trd = "zxcvbnm";
+        let fst_row = document.querySelector("#first-row")
+        let snd_row = document.querySelector("#second-row")
+        let trd_row = document.querySelector("#third-row")
+        for (let letter of fst) {
+          let square = document.createElement("div")
+          square.classList.add("keycap")
+          square.onclick = () => {
+            app.input(letter)
+          }
+          square.appendChild(document.createTextNode(letter))
+          fst_row.appendChild(square)
+        }
+
+
+        for (let letter of snd) {
+          let square = document.createElement("div")
+          square.classList.add("keycap")
+          square.appendChild(document.createTextNode(letter))
+          snd_row.appendChild(square)
+          square.onclick = () => {
+            app.input(letter)
+          }
+        }
+
+        let enter_button = document.createElement("div")
+        enter_button.classList.add("keycap")
+        enter_button.appendChild(document.createTextNode("Enter"))
+        enter_button.style.width = 60;
+        enter_button.onclick = () => {
+          app.enter()
+        }
+        trd_row.appendChild(enter_button)
+
+
+        trd_row.append()
+        for (let letter of trd) {
+          let square = document.createElement("div")
+          square.classList.add("keycap")
+          square.appendChild(document.createTextNode(letter))
+          trd_row.appendChild(square)
+          square.onclick = () => {
+            app.input(letter)
+          }
+        }
+
+        let backspace_button = document.createElement("div")
+        backspace_button.classList.add("keycap")
+        backspace_button.appendChild(document.createTextNode("Backspace"))
+        backspace_button.style.width = 88;
+        backspace_button.onclick = () => {
+          app.backspace()
+        }
+        trd_row.appendChild(backspace_button)
+      }
+
+      input(letter) {
+        if (this.game.state.current_input.length < 5) {
+          this.game.state.current_input += letter;
+        }
+        this.gameBoard.innerHTML = ''
+        this.draw()
+      }
+
+      enter() {
+        if (this.game.state.current_input.length >= 5) {
+          if (this.game.state.current_input === this.game.state.answer) {
+            alert("right answer")
+            this.game = new Game();
+            this.gameBoard.innerHTML = ''
+            this.draw()
+            return
+          }
+          this.game.state.input_words.push(this.game.state.current_input)
+          this.game.state.current_input = ""
+          this.gameBoard.innerHTML = ''
+          this.draw()
+        }
+      }
+
+      backspace() {
+        if (!this.game.state.current_input.length <= 0) {
+          this.game.state.current_input = this.game.state.current_input.slice(0, this.game.state.current_input.length - 1)
+          this.gameBoard.innerHTML = ''
+          this.draw()
+        }
+      }
+
+      closeHelp() {
+        this.help.classList.add("hide")
+      }
+
+      openHelp() {
+        this.help.classList.remove("hide")
+      }
+      draw_empty(word) {
+        let row = document.createElement("div")
+        row.classList.add("gap")
+        row.classList.add("flex-row")
+        for (let letter of word) {
+          let square = document.createElement("div")
+          square.classList.add("square")
+          square.style.border = "4px solid #aaa"
+          square.appendChild(document.createTextNode(letter))
+          row.appendChild(square)
+        }
+        this.gameBoard.appendChild(row)
+      }
+
+      draw_row(word, answer) {
+        let answer_ = [...answer]
+        let row = document.createElement("div")
+        row.classList.add("gap")
+        row.classList.add("flex-row")
+
+        let unmatched = []
+        let index = 0;
+        for (let letter of word) {
+          let square = document.createElement("div")
+          square.classList.add("square")
+          if (answer.includes(letter)) {
+            if (answer_[index] == letter) {
+              square.classList.add("right-pos")
+              answer[index] = "_"
+            } else {
+              let index_ = 0
+              let avalible_slots = 0
+              for (let letter_a of answer) {
+                if (letter_a === letter && letter_a !== word[index_]) {
+                  avalible_slots++;
+                  break;
+                }
+                index_++;
+              }
+              if (avalible_slots >= 1) {
+                square.classList.add("wrong-pos")
+                let index_ = 0;
+                for (let letter_a of answer) {
+                  if (letter_a === letter && letter_a !== word[index_]) {
+                    answer[index_] = "_"
+                    console.log(answer)
+                    break;
+                  }
+                  index_++;
+                }
+
+              } else {
+                square.classList.add("not-in-word")
+              }
+            }
+          } else {
+            square.classList.add("not-in-word")
+          }
+          square.appendChild(document.createTextNode(letter))
+
+          row.appendChild(square)
+          index++;
+        }
+        this.gameBoard.appendChild(row)
+      }
+
+      draw() {
+        let counter = 0;
+        for (let word of this.game.state.input_words) {
+          this.draw_row(word, [...this.game.state.answer])
+          counter++;
+        }
+        this.draw_empty(this.game.state.current_input.padEnd(5, " "));
+        counter++;
+        for (; counter < 5; ++counter) {
+          this.draw_empty("     ")
+        }
+      }
+    }
+
+    class Game {
+      constructor() {
+        this.state = {
+          input_words: [],
+          answer: "apple",
+          current_input: ""
+        }
+      }
+    }
+
+    window.closeHelp = () => {
+      window.app.closeHelp()
+    }
+    window.openHelp = () => {
+      window.app.openHelp()
+    }
+    window.app = new App()
+
+  }
+
+</script>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  button {
+    padding:5px;
+    margin:12px;
+    background-color: rgb(63, 60, 60);
+    color:rgb(243, 250, 250);
+    border: none;
+    border-radius: 3px;
+  }
+
+  body {
+    padding: 0;
+    margin: 0;
+  }
+
+
+  .greybox {
+    /* border: 5px solid grey; */
+  }
+
+  .flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+
+  #game-view {
+    display: flex;
+    justify-content: baseline;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .space-between {
+    justify-content: space-between;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  #header {
+    width: 100%;
+    border-bottom: 2px solid rgb(189, 188, 188);
+  }
+
+  .mb {
+    margin-bottom: 20px;
+  }
+
+  .overlay {
+    z-index:20;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -220;
+    background-color: rgba(0, 0, 0, 0.727);
+  }
+
+  #help-content {
+    margin: auto;
+    padding: 30px;
+    margin-top: 60px;
+    max-width: 500px;
+    background-color: rgb(255, 255, 255);
+  }
+
+  .seperator {
+    border-bottom: 3px solid rgb(229, 226, 226);
+    width: 100%;
+  }
+
+  .keycap {
+    background-color: rgb(201, 203, 206);
+    border-radius: 3px;
+    width: 48px;
+    height: 63px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size:1.1em;
+  }
+
+  .keycap:hover {
+    background-color: rgb(43, 46, 49);
+    color: white;
+  }
+
+  .square {
+    text-transform: capitalize;
+    font-size:2em;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 4px solid rgb(75, 72, 72);
+    height: 70px;
+    width: 70px;
+  }
+
+  .wrong-pos {
+    background-color: rgb(65, 151, 65);
+    color: white;
+  }
+
+  .right-pos {
+    background-color: rgb(94, 88, 40);
+    color: white;
+  }
+
+  .gap *+* {
+    margin-left: 10px;
+  }
+
+  .vgap>*+* {
+    margin-top: 10px;
+  }
+
+  .not-in-word {
+    background-color: rgb(75, 72, 72);
+    color: white;
+  }
+
+  #keyboard {
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 30px;
+  }
+</style>
+
+<body onload="main()">
+  <div id="content" class="flex greybox">
+    <div id="help" class="overlay">
+      <div id="help-content">
+        <div class="flex-row space-between">
+          <div></div>
+          <p>HOW TO PLAY</p>
+          <button onclick="closeHelp()">X</button>
+        </div>
+        <p>Guess the WORDLE in six tries.</p>
+        <p>Each guess must be a valid five-letter word. Hit the enter button to submit.</p>
+        <p>After each guess, the color of the tiles will change to show how close your guess was to the word.</p>
+        <div class="seperator"></div>
+        <p>Examples</p>
+        <div class="flex-row gap">
+          <div class="square right-pos">
+            W
+          </div>
+          <div class="square">E</div>
+          <div class="square">A</div>
+          <div class="square">R</div>
+          <div class="square">Y</div>
+        </div>
+        <p>The letter W is in the word and in the correct spot.</p>
+        <div class="flex-row gap">
+          <div class="square">
+            P
+          </div>
+          <div class="square wrong-pos">I</div>
+          <div class="square">L</div>
+          <div class="square">L</div>
+          <div class="square">S</div>
+        </div>
+        <p>The letter I is in the word but in the wrong spot.</p>
+        <div class="flex-row gap">
+          <div class="square"> V </div>
+          <div class="square">A</div>
+          <div class="square">G</div>
+          <div class="square not-in-word">U</div>
+          <div class="square">E</div>
+        </div>
+        <p>The letter U is not in the word in any spot.</p>
+        <div class="seperator"></div>
+        <p>A new WORDLE will be available each day!</p>
+
+      </div>
+    </div>
+
+    <div id="header" class="flex-row space-between mb">
+      <button onclick="openHelp()">Help</button>
+      <p>Wordle</p>
+      <button>Setting</button>
+    </div>
+    <div id="game-view" class="greybox vgap"></div>
+
+    <div id="keyboard" class="vgap">
+      <div id="first-row" class="flex-row gap"></div>
+      <div id="second-row" style="padding-left: 29" class="flex-row gap"></div>
+      <div id="third-row" class="flex-row gap" style="padding-left:5"></div>
+    </div>
+  </div>
+</body>
+</html>
