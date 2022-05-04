@@ -106,13 +106,16 @@
                             alert("word not in list");
                             return;
                         }
-                        if (this.game.state.current_input === this.game.state.answer) {
-                            alert("right answer");
-                            this.game = new Game();
-                            this.gameBoard.innerHTML = "";
-                            this.draw();
-                            return;
-                        }
+
+                        // todo: win condition. uncomment this for sprint 2 
+                        // if (this.game.state.current_input === this.game.state.answer) {
+                        //     alert("right answer");
+                        //     this.game = new Game();
+                        //     this.gameBoard.innerHTML = "";
+                        //     this.draw();
+                        //     return;
+                        // }
+
                         this.game.state.input_words.push(this.game.state.current_input);
                         this.game.state.current_input = "";
                         this.gameBoard.innerHTML = "";
