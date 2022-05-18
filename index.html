@@ -25,7 +25,11 @@
             try {
                 document.querySelector('meta[property="og:title"]').setAttribute("content", win);
                 if (win) {
-                    alert("<pre>" + win + `</pre>`);
+                    alertResult(
+                        "<pre>" +
+                            win +
+                            `</pre> <button> <a href="https://${window.location.host}/">play new game</a></button>`,
+                    );
                 }
             } catch {}
 
@@ -35,12 +39,32 @@
                           <div class="alert-content">
                                   <div class="flex-row space-between">
                                       <div></div>
-                                      <button>X</button>
+                                      <button style="padding: 8px 10px" class="mb-12">X</button>
                                   </div>
                                   <p>${text}</p>
                           </div>
                         </div>
                                   `;
+
+                var elm = document.createElement("div");
+                elm.innerHTML = html;
+                elm.querySelector("button").onclick = () => {
+                    elm.remove();
+                };
+                document.body.querySelector("#content").appendChild(elm);
+            }
+
+            function alertResult(text) {
+                let html = `
+                             <div id="alert" class="overlay-white">
+                              <div class="alert-content">
+                                      <div class="flex-row space-between">
+                                          <div></div>
+                                      </div>
+                                      <p>${text}</p>
+                              </div>
+                            </div>
+                                      `;
 
                 var elm = document.createElement("div");
                 elm.innerHTML = html;
@@ -165,11 +189,15 @@
 
                         if (this.game.state.current_input === this.game.state.answer) {
                             alert(`
+                            <div class="vgap">
                             <h1>You are correct!</h1>
-                            <div>share to twitter<div>
+                            <div>share to twitter</div>
                         <input value='${this.getTwitterUrl()}'></input><button>copy</button>
-                            <div>share to facebook<div>
-                        <input value='${window.location.hostname + this.getFacebookUrl()}'></input><button>copy</button>
+                            <div>share to facebook</div>
+                        <input value='https://${
+                            window.location.hostname + this.getFacebookUrl()
+                        }'></input><button>copy</button>
+                        </div>
                             `);
 
                             this.game = new Game();
@@ -10314,6 +10342,9 @@
             border: none;
             border-radius: 3px;
         }
+        .mb-12 {
+            margin: 12px;
+        }
 
         body {
             padding: 0;
@@ -10368,6 +10399,16 @@
             right: 0;
             bottom: -220;
             background-color: rgba(0, 0, 0, 0.727);
+        }
+
+        .overlay-white {
+            z-index: 20;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: -220;
+            background-color: white;
         }
 
         #help-content {
@@ -10450,6 +10491,10 @@
             bottom: 0;
             padding-bottom: 30px;
         }
+
+        a {
+            color: white;
+        }
     </style>
 
     <body onload="main()">
@@ -10459,7 +10504,7 @@
                     <div class="flex-row space-between">
                         <div></div>
                         <p>HOW TO PLAY</p>
-                        <button onclick="closeHelp()">X</button>
+                        <button class="mb-12" style="padding: 8px 10px" onclick="closeHelp()">X</button>
                     </div>
                     <p>Guess the WORDLE in six tries.</p>
                     <p>Each guess must be a valid five-letter word. Hit the enter button to submit.</p>
@@ -10499,9 +10544,10 @@
             </div>
 
             <div id="header" class="flex-row space-between mb">
-                <button onclick="openHelp()">Help</button>
+                <button class="mb-12" onclick="openHelp()">Help</button>
                 <p>Wordle</p>
-                <button>Setting</button>
+                <div></div>
+                <!-- <button>Setting</button> -->
             </div>
             <div id="game-view" class="greybox vgap"></div>
 
