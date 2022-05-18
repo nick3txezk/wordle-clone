@@ -30,6 +30,9 @@
             let win = findGetParameter("win") || "";
             try {
                 document.querySelector('meta[property="og:title"]').setAttribute("content", win);
+                if (win) {
+                    alert(win);
+                }
             } catch {}
 
             function alert(text) {
@@ -165,14 +168,13 @@
                             return;
                         }
 
-                        // todo: win condition. uncomment this for sprint 2
-                        // if (this.game.state.current_input === this.game.state.answer) {
-                        //     alert("right answer");
-                        //     this.game = new Game();
-                        //     this.gameBoard.innerHTML = "";
-                        //     this.draw();
-                        //     return;
-                        // }
+                        if (this.game.state.current_input === this.game.state.answer) {
+                            alert("right answer");
+                            this.game = new Game();
+                            this.gameBoard.innerHTML = "";
+                            this.draw();
+                            return;
+                        }
 
                         this.game.state.input_words.push(this.game.state.current_input);
                         this.game.state.current_input = "";
