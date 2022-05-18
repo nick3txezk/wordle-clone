@@ -26,7 +26,10 @@
                     });
                 return result;
             }
-            console.log("win: ", findGetParameter("win"));
+
+            let win = findGetParameter("win") || "";
+            document.querySelector('meta[name="title"]').setAttribute("content", win);
+
             function alert(text) {
                 let html = `
                          <div id="alert" class="overlay">
