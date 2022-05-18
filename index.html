@@ -1,29 +1,51 @@
 <html>
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=0.63">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.63" />
         <title>Wordle</title>
+
+        <meta
+            property="og:url"
+            content="https://nick3txezk.github.io/wordle-clone/?win=Wordle%20333%203%2F6%0A%20%20%20%20%20%20%20%20%E2%AC%9C%F0%9F%9F%A8%E2%AC%9C%F0%9F%9F%A8%E2%AC%9C%0A%20%20%20%20%20%20%20%20%F0%9F%9F%A8%F0%9F%9F%A8%E2%AC%9C%E2%AC%9C%E2%AC%9C%0A%20%20%20%20%20%20%20%20%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="my wordle" />
+        <meta property="og:description" content="my wordle description" />
     </head>
     <script async="false">
         function main() {
+            function findGetParameter(parameterName) {
+                var result = null,
+                    tmp = [];
+                location.search
+                    .substr(1)
+                    .split("&")
+                    .forEach(function (item) {
+                        tmp = item.split("=");
+                        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+                    });
+                return result;
+            }
+            console.log("win: ", findGetParameter("win"));
             function alert(text) {
                 let html = `
- <div id="alert" class="overlay">
-  <div class="alert-content">
-          <div class="flex-row space-between">
-              <div></div>
-              <button>X</button>
-          </div>
-          <p>${text}</p>
-  </div>
-</div>
-          `;
+                         <div id="alert" class="overlay">
+                          <div class="alert-content">
+                                  <div class="flex-row space-between">
+                                      <div></div>
+                                      <button>X</button>
+                                  </div>
+                                  <p>${text}</p>
+                          </div>
+                        </div>
+                                  `;
 
-          var elm = document.createElement("div")
-          elm.innerHTML = html
-          elm.querySelector("button").onclick = () => {
-            elm.remove()
-          }
-          document.body.querySelector("#content").appendChild(elm)
+                var elm = document.createElement("div");
+                elm.innerHTML = html;
+                elm.querySelector("button").onclick = () => {
+                    elm.remove();
+                };
+                document.body.querySelector("#content").appendChild(elm);
             }
             class App {
                 constructor() {
@@ -33,6 +55,37 @@
                     this.gameBoard = document.querySelector("#game-view");
                     this.draw();
                     this.draw_keyboard();
+                }
+                getResultString() {
+                    return `Wordle 333 3/6
+        ⬜🟨⬜🟨⬜
+        🟨🟨⬜⬜⬜
+        🟩🟩🟩🟩🟩`;
+                }
+
+                getTwitterUrl() {
+                    console.log(this.getResultString());
+                    return `https://twitter.com/intent/tweet?text=${encodeURI(this.getResultString())}`;
+                }
+
+                shareTwitter() {
+                    var a = document.createElement("a");
+                    a.href = this.getTwitterUrl();
+                    document.body.appendChild(a);
+                    a.click();
+                }
+
+                domain = "https://nick3txezk.github.io/wordle-clone/";
+
+                getFacebookUrl() {
+                    return `./?win=${encodeURIComponent(this.getResultString())}`;
+                }
+
+                shareFacebook() {
+                    var a = document.createElement("a");
+                    a.href = this.getFacebookUrl();
+                    document.body.appendChild(a);
+                    a.click();
                 }
 
                 draw_keyboard() {
@@ -107,7 +160,7 @@
                             return;
                         }
 
-                        // todo: win condition. uncomment this for sprint 2 
+                        // todo: win condition. uncomment this for sprint 2
                         // if (this.game.state.current_input === this.game.state.answer) {
                         //     alert("right answer");
                         //     this.game = new Game();
@@ -10446,5 +10499,28 @@
                 <div id="third-row" class="flex-row gap" style="padding-left: 5"></div>
             </div>
         </div>
+
+        <button onclick="app.shareFacebook()">share on Facebook</button>
+        <button onclick="app.shareTwitter()">share on Twitter</button>
+
+        <div id="fb-root"></div>
+        <script>
+            (function (d, s, id) {
+                var js,
+                    fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+                fjs.parentNode.insertBefore(js, fjs);
+            })(document, "script", "facebook-jssdk");
+        </script>
+
+        <!-- Your share button code -->
+        <div
+            class="fb-share-button"
+            data-href="https://nick3txezk.github.io/wordle-clone/?win=Wordle%20333%203%2F6%0A%20%20%20%20%20%20%20%20%E2%AC%9C%F0%9F%9F%A8%E2%AC%9C%F0%9F%9F%A8%E2%AC%9C%0A%20%20%20%20%20%20%20%20%F0%9F%9F%A8%F0%9F%9F%A8%E2%AC%9C%E2%AC%9C%E2%AC%9C%0A%20%20%20%20%20%20%20%20%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9"
+            data-layout="button_count"
+        ></div>
     </body>
 </html>
