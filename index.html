@@ -29,7 +29,7 @@
 
             let win = findGetParameter("win") || "";
             try {
-                document.querySelector('meta[name="title"]').setAttribute("content", win);
+                document.querySelector('meta[property="og:title"]').setAttribute("content", win);
             } catch {}
 
             function alert(text) {
