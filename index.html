@@ -3,14 +3,8 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=0.63" />
         <title>Wordle</title>
-
-        <meta
-            property="og:url"
-            content="https://nick3txezk.github.io/wordle-clone/?win=Wordle%20333%203%2F6%0A%20%20%20%20%20%20%20%20%E2%AC%9C%F0%9F%9F%A8%E2%AC%9C%F0%9F%9F%A8%E2%AC%9C%0A%20%20%20%20%20%20%20%20%F0%9F%9F%A8%F0%9F%9F%A8%E2%AC%9C%E2%AC%9C%E2%AC%9C%0A%20%20%20%20%20%20%20%20%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9"
-        />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="my wordle" />
-        <meta property="og:description" content="my wordle description" />
+        <meta property="og:title" content="wordle clone result" />
     </head>
     <script async="false">
         function main() {
@@ -31,7 +25,7 @@
             try {
                 document.querySelector('meta[property="og:title"]').setAttribute("content", win);
                 if (win) {
-                    alert(win);
+                    alert("<pre>" + win + `</pre>`);
                 }
             } catch {}
 
@@ -74,6 +68,7 @@
                 getTwitterUrl() {
                     console.log(this.getResultString());
                     return `https://twitter.com/intent/tweet?text=${encodeURI(this.getResultString())}`;
+                    // return `./?win=${encodeURIComponent(this.getResultString())}`;
                 }
 
                 shareTwitter() {
@@ -86,7 +81,7 @@
                 domain = "https://nick3txezk.github.io/wordle-clone/";
 
                 getFacebookUrl() {
-                    return `./?win=${encodeURIComponent(this.getResultString())}`;
+                    return `/?win=${encodeURIComponent(this.getResultString())}`;
                 }
 
                 shareFacebook() {
@@ -169,7 +164,14 @@
                         }
 
                         if (this.game.state.current_input === this.game.state.answer) {
-                            alert("right answer");
+                            alert(`
+                            <h1>You are correct!</h1>
+                            <div>share to twitter<div>
+                        <input value='${this.getTwitterUrl()}'></input><button>copy</button>
+                            <div>share to facebook<div>
+                        <input value='${window.location.hostname + this.getFacebookUrl()}'></input><button>copy</button>
+                            `);
+
                             this.game = new Game();
                             this.gameBoard.innerHTML = "";
                             this.draw();
@@ -10306,7 +10308,7 @@
         }
         button {
             padding: 5px;
-            margin: 12px;
+            /* margin: 12px; */
             background-color: rgb(63, 60, 60);
             color: rgb(243, 250, 250);
             border: none;
@@ -10434,6 +10436,9 @@
         .vgap > * + * {
             margin-top: 10px;
         }
+        input {
+            width: 100%;
+        }
 
         .not-in-word {
             background-color: rgb(75, 72, 72);
@@ -10507,27 +10512,7 @@
             </div>
         </div>
 
-        <button onclick="app.shareFacebook()">share on Facebook</button>
-        <button onclick="app.shareTwitter()">share on Twitter</button>
-
-        <div id="fb-root"></div>
-        <script>
-            (function (d, s, id) {
-                var js,
-                    fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) return;
-                js = d.createElement(s);
-                js.id = id;
-                js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
-                fjs.parentNode.insertBefore(js, fjs);
-            })(document, "script", "facebook-jssdk");
-        </script>
-
-        <!-- Your share button code -->
-        <div
-            class="fb-share-button"
-            data-href="https://nick3txezk.github.io/wordle-clone/?win=Wordle%20333%203%2F6%0A%20%20%20%20%20%20%20%20%E2%AC%9C%F0%9F%9F%A8%E2%AC%9C%F0%9F%9F%A8%E2%AC%9C%0A%20%20%20%20%20%20%20%20%F0%9F%9F%A8%F0%9F%9F%A8%E2%AC%9C%E2%AC%9C%E2%AC%9C%0A%20%20%20%20%20%20%20%20%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9%F0%9F%9F%A9"
-            data-layout="button_count"
-        ></div>
+        <!-- <button onclick="app.shareFacebook()">share on Facebook</button>
+        <button onclick="app.shareTwitter()">share on Twitter</button> -->
     </body>
 </html>
