@@ -28,7 +28,9 @@
             }
 
             let win = findGetParameter("win") || "";
-            document.querySelector('meta[name="title"]').setAttribute("content", win);
+            try {
+                document.querySelector('meta[name="title"]').setAttribute("content", win);
+            } catch {}
 
             function alert(text) {
                 let html = `
