@@ -216,10 +216,13 @@
                             this.game.state.current_input = "";
                             this.gameBoard.innerHTML = "";
                             this.draw();
-                            alert(`
+                            alertResult(`
                                     <div class="vgap">
                                     <h1>You are correct!</h1>
                                     <pre>${this.getResultString()}</pre>
+                                    <button> <a href="https://${
+                                        window.location.host
+                                    }/wordle-clone/">play new game</a></button>
                                     <div>share to twitter</div>
                                 <input id="twitter" value='${this.getTwitterUrl()}'></input><button onclick="copyText('twitter')">copy</button>
                                     <div>share to facebook</div>
