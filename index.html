@@ -8,7 +8,16 @@
     </head>
     <script async="false">
         function main() {
-            writeText = navigator.clipboard.writeText;
+            function copyText(id) {
+                var elm = document.getElementById(id);
+
+                elm.select();
+                elm.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(elm.value);
+                alert("Copied to clipboard");
+            }
+            window.copyText = copyText;
+
             function findGetParameter(parameterName) {
                 var result = null,
                     tmp = [];
@@ -203,21 +212,26 @@
                         }
 
                         if (this.game.state.current_input === this.game.state.answer) {
+                            this.game.state.input_words.push(this.game.state.current_input);
+                            this.game.state.current_input = "";
+                            this.gameBoard.innerHTML = "";
+                            this.draw();
                             alert(`
                                     <div class="vgap">
                                     <h1>You are correct!</h1>
+                                    <pre>${this.getResultString()}</pre>
                                     <div>share to twitter</div>
-                                <input value='${this.getTwitterUrl()}'></input><button onclick="writeText('${this.getTwitterUrl()}')">copy</button>
+                                <input id="twitter" value='${this.getTwitterUrl()}'></input><button onclick="copyText('twitter')">copy</button>
                                     <div>share to facebook</div>
-                                <input value='https://${
+                                <input id="facebook" value='https://${
                                     window.location.hostname + "/wordle-clone" + this.getFacebookUrl()
-                                }'></input><button onclick="writeText('${this.getFacebookUrl()}')">copy</button>
+                                }'></input><button onclick="copyText('facebook')">copy</button>
                                 </div>
                                     `);
 
-                            this.game = new Game();
-                            this.gameBoard.innerHTML = "";
-                            this.draw();
+                            // this.game = new Game();
+                            // this.gameBoard.innerHTML = "";
+                            // this.draw();
                             return;
                         }
 
