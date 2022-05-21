@@ -8,6 +8,7 @@
     </head>
     <script async="false">
         function main() {
+            writeText = navigator.clipboard.writeText;
             function findGetParameter(parameterName) {
                 var result = null,
                     tmp = [];
@@ -35,16 +36,16 @@
 
             function alert(text) {
                 let html = `
-                         <div id="alert" class="overlay">
-                          <div class="alert-content">
-                                  <div class="flex-row space-between">
-                                      <div></div>
-                                      <button style="padding: 8px 10px" class="mb-12">X</button>
+                                 <div id="alert" class="overlay">
+                                  <div class="alert-content">
+                                          <div class="flex-row space-between">
+                                              <div></div>
+                                              <button style="padding: 8px 10px" class="mb-12">X</button>
+                                          </div>
+                                          <p>${text}</p>
                                   </div>
-                                  <p>${text}</p>
-                          </div>
-                        </div>
-                                  `;
+                                </div>
+                                          `;
 
                 var elm = document.createElement("div");
                 elm.innerHTML = html;
@@ -56,15 +57,15 @@
 
             function alertResult(text) {
                 let html = `
-                             <div id="alert" class="overlay-white">
-                              <div class="alert-content">
-                                      <div class="flex-row space-between">
-                                          <div></div>
+                                     <div id="alert" class="overlay-white">
+                                      <div class="alert-content">
+                                              <div class="flex-row space-between">
+                                                  <div></div>
+                                              </div>
+                                              <p>${text}</p>
                                       </div>
-                                      <p>${text}</p>
-                              </div>
-                            </div>
-                                      `;
+                                    </div>
+                                              `;
 
                 var elm = document.createElement("div");
                 elm.innerHTML = html;
@@ -83,10 +84,24 @@
                     this.draw_keyboard();
                 }
                 getResultString() {
-                    return `Wordle 333 3/6
-        ⬜🟨⬜🟨⬜
-        🟨🟨⬜⬜⬜
-        🟩🟩🟩🟩🟩`;
+                    return (
+                        "Wordle result:\n" +
+                        [...document.querySelectorAll("#game-view .gap")]
+                            .map(x =>
+                                [...x.querySelectorAll(".square")]
+                                    .map(x => {
+                                        if (x.classList.contains("wrong-pos")) {
+                                            return "🟨";
+                                        }
+                                        if (x.classList.contains("right-pos")) {
+                                            return "🟩";
+                                        }
+                                        return "⬜";
+                                    })
+                                    .join(""),
+                            )
+                            .join("\n")
+                    );
                 }
 
                 getTwitterUrl() {
@@ -189,16 +204,16 @@
 
                         if (this.game.state.current_input === this.game.state.answer) {
                             alert(`
-                            <div class="vgap">
-                            <h1>You are correct!</h1>
-                            <div>share to twitter</div>
-                        <input value='${this.getTwitterUrl()}'></input><button>copy</button>
-                            <div>share to facebook</div>
-                        <input value='https://${
-                            window.location.hostname + "/wordle-clone" + this.getFacebookUrl()
-                        }'></input><button>copy</button>
-                        </div>
-                            `);
+                                    <div class="vgap">
+                                    <h1>You are correct!</h1>
+                                    <div>share to twitter</div>
+                                <input value='${this.getTwitterUrl()}'></input><button onclick="writeText('${this.getTwitterUrl()}')">copy</button>
+                                    <div>share to facebook</div>
+                                <input value='https://${
+                                    window.location.hostname + "/wordle-clone" + this.getFacebookUrl()
+                                }'></input><button onclick="writeText('${this.getFacebookUrl()}')">copy</button>
+                                </div>
+                                    `);
 
                             this.game = new Game();
                             this.gameBoard.innerHTML = "";
